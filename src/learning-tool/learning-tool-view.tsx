@@ -3,6 +3,7 @@ import { AutoTokenizer } from '@huggingface/transformers';
 import { textToIds, generateReplyStream } from '../ai';
 import type { ReasoningStep, TokenInfo } from './types';
 import { WeightControls } from './weight-controls';
+import { WeightVisualization } from './weight-visualization';
 
 export function LearningToolView() {
   const [text, setText] = useState('');
@@ -105,6 +106,11 @@ export function LearningToolView() {
         <div className="panel">
           <h3>3 · Weights & reasoning</h3>
           <WeightControls config={{ focus }} onChange={setFocus} />
+          <WeightVisualization
+            tokens={numberView ?? []}
+            focus={focus}
+            steps={steps}
+          />
           <div className="output">
             <h4>AI answer</h4>
             <p>{output || <i>Press Think to see how the numbers and weights shape the answer.</i>}</p>

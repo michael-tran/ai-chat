@@ -259,6 +259,70 @@ body {
   color: var(--text);
 }
 
+/* ---- weight visualization ---- */
+.weight-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 10px 0 6px;
+}
+
+.weight-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+}
+
+.wt-word {
+  color: var(--text-h);
+}
+
+.wt-num {
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+}
+
+.wt-track {
+  height: 18px;
+  background: var(--code-bg);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.wt-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 0.12s ease;
+}
+
+.wt-fill.wt-highest {
+  background: var(--accent-border);
+  box-shadow: 0 0 0 2px var(--accent-border);
+}
+
+.wt-val {
+  justify-self: start;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--accent);
+}
+
+.wt-step {
+  justify-self: end;
+  font-size: 0.65rem;
+  color: var(--text);
+}
+
+.weight-explanation {
+  margin: 6px 0 0;
+  font-size: 0.75rem;
+  color: var(--text);
+}
+
 .output {
   background: var(--code-bg);
   border: 1px solid var(--border);

@@ -1,3 +1,4 @@
 export { WeightControls } from './weight-controls';
 export { default as LearningToolView } from './learning-tool-view';
-export type { WeightConfig, ReasoningStep } from './types';
+export { default as WeightVisualization } from './weight-visualization';
+export type { WeightConfig, ReasoningStep, TokenInfo } from './types';

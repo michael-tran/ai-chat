@@ -184,6 +184,25 @@ self.addEventListener('message', async (ev) => {
 
         if (eosTokenId !== null && nextTokenId === eosTokenId) break;
 
+        // Capture the top-k next-token contributions (read weights) for this
+        // generation step so the frontend can render token contributions and a
+        // step-by-step reasoning trail. The model's contribution values are
+        // derived directly from the logits the model itself produced for the
+        // numeric inputs (input_ids, attention_mask, position_ids).
+        const topK = 10;
+        const candidates = Array.from(data.slice(lastOffset, lastOffset + vocabSize))
+          .map((value, index) => ({ tokenId: index, value }))
+          .sort((a, b) => b.value - a.value)
+          .slice(0, topK);
+
+        self.postMessage({
+          type: 'reasoning_step',
+          step: generated.length,
+          chosen: nextTokenId,
+          candidateIds: candidates.map((c) => c.tokenId),
+          weights: candidates.map((c) => +c.value.toFixed(4)),
+        });
+
         self.postMessage({ type: 'token', tokenId: nextTokenId });
 
         generated.push(nextTokenId);

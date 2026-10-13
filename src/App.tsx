@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import './App.css'
+import './App.css';
+import { LearningToolView } from './learning-tool/index';
 import { generateReplyStream, type Message } from './ai';
 
 function App() {
@@ -94,6 +95,8 @@ function App() {
           </div>
         </form>
       </div>
+
+      <LearningToolView />
     </div>
   );
 }

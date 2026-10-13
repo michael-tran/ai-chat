@@ -1,4 +1,5 @@
 import { AutoTokenizer, env as transformersEnv } from '@huggingface/transformers';
+import type { ReasoningStep } from './learning-tool/types';
 
 let tokenizer: any = null;
 let aiWorker: Worker | null = null;
@@ -91,8 +92,15 @@ export async function initWorkerSession() {
   return workerInitPromise;
 }
 
-// Streamed generation: returns a promise that resolves to final text and accepts an onToken callback
-export async function generateReplyStream(liveMessages: Message[], userText: string, onToken: (tokenId: number, tokenText: string) => void, maxLength = 120) {
+// Streamed generation: returns a promise that resolves to final text and
+// accepts optional callbacks for each generated token and reasoning step.
+export async function generateReplyStream(
+  liveMessages: Message[],
+  userText: string,
+  onToken: (tokenId: number, tokenText: string) => void,
+  maxLength = 120,
+  onReasoningStep?: (step: ReasoningStep) => void,
+) {
   await initTokenizer();
   await initWorkerSession();
   startAiWorker();
@@ -128,6 +136,14 @@ export async function generateReplyStream(liveMessages: Message[], userText: str
         aiWorker!.removeEventListener('message', onMessage);
         const finalText = await tokenizer.decode(partialIds, { skipSpecialTokens: true });
         resolve(finalText);
+      } else if (m?.type === 'reasoning_step') {
+        const step: ReasoningStep = {
+          step: m.step,
+          chosen: m.chosen,
+          candidateIds: m.candidateIds,
+          weights: m.weights,
+        };
+        if (onReasoningStep) onReasoningStep(step);
       } else if (m?.type === 'error') {
         aiWorker!.removeEventListener('message', onMessage);
         reject(new Error(m.message || 'worker error'));
